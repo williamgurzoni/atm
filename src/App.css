@@ -1,38 +1,75 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
+.app {
+  display: flex;
+  height: 100vh;
   background-color: #282c34;
-  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.atm {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  background-color: gainsboro;
+  width: 300px;
+  padding: 30px;
+  border-radius: 5px;
+}
+
+.screen {
+  background-color: rgb(243, 243, 243);
+  height: 350px;
+  border-radius: 3px;
+  padding: 20px;
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+}
+
+.keyboard > .principal {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  background-color: rgb(153, 153, 153);
+  width: 70%;
+  padding: 10px;
+}
+
+.keyboard > .actions {
+  background-color: rgb(190, 190, 190);
+  width: 30%;
+  padding: 10px;
+}
+
+.key {
+  display: flex;
+  background-color: rgb(243, 243, 243);
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  width: 30%;
+  height: 40px;
+  margin-bottom: 5px;
+  cursor: pointer;
 }
 
-.App-link {
-  color: #61dafb;
+.actions > .key {
+  width: 98%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.liNoDecoration {
+  list-style: none;
+}
+
+.content > .key {
+  background-color: rgb(216, 216, 216);
+  border-color: gray;
+  border-radius: 3px;
+  width: 100%;
+}
+
+.content > .active {
+  background-color: rgb(121, 121, 121);
 }
