@@ -1,5 +1,6 @@
 import { Container } from "unstated";
 import { SCREEN, NOTE_TYPE } from "../types";
+import { sumArrayItems } from "../Utils";
 
 const INITIAL_STATE = {
   screen: SCREEN.SHOW_OPTIONS,
@@ -84,7 +85,7 @@ class AppContainer extends Container {
     const totalMoney = this.getTotalAtm();
     const value = parseInt(keyboard);
 
-    const combinations = [];
+    let combinations = [];
 
     if (value > totalMoney) {
       this.setState({ error: "Could not perform the operation" });
@@ -94,67 +95,112 @@ class AppContainer extends Container {
     let indexCombinations = 0;
 
     // Notes looping - create list of possibilities
-    Object.values(NOTE_TYPE)
-      .sort((a, b) => b - a)
-      .forEach((noteValue, indexNote) => {
-        const divisor = value / noteValue;
-        let firstPass = true;
-        indexCombinations = 0;
+    for (
+      let indexNote = Object.values(NOTE_TYPE).length - 1;
+      indexNote >= 0;
+      indexNote--
+    ) {
+      const noteValue = Object.values(NOTE_TYPE).find(
+        (value, key) => key === indexNote
+      );
+      const divisor = parseInt(value / noteValue);
+      let firstPass = true;
+      indexCombinations = 0;
 
-        // Line looping
-        for (let i = divisor; i > 0; i--) {
-          if (combinations.length <= indexCombinations) {
-            combinations.push([]);
-          }
+      // Line looping
+      for (let i = divisor; i > 0; i--) {
+        if (combinations.length <= indexCombinations) {
+          combinations.push([]);
+        }
+
+        if (firstPass && indexNote !== Object.values(NOTE_TYPE).length - 1) {
+          const previousNoteValue = Object.values(NOTE_TYPE)[indexNote + 1];
 
           if (
-            firstPass &&
-            indexNote !==
-              Object.values(NOTE_TYPE).reduce((prev, curr) => prev + curr) - 1
+            combinations[indexCombinations].indexOf(previousNoteValue) === -1
           ) {
-            const previousNoteValue = Object.values(NOTE_TYPE)[indexNote + 1];
-
-            if (combinations.find(el => el === previousNoteValue) === -1) {
-              i = divisor;
-              firstPass = false;
-            }
-          }
-
-          // Last note
-          if (indexNote === 0) {
             i = divisor;
+            firstPass = false;
           }
+        }
 
-          let exit = false;
+        // Last note
+        if (indexNote === 0) {
+          i = divisor;
+        }
 
-          // Items looping
-          for (let j = i; j > 0; j--) {
-            let currentTotalValue = combinations.reduce(
-              (prev, curr) => prev + curr
-            );
-            if (currentTotalValue + noteValue <= value) {
-              combinations.push(noteValue);
-              currentTotalValue = currentTotalValue + noteValue;
-            } else {
-              break;
-            }
-            if (indexNote === 0 && j === 1) {
-              exit = true;
-            }
+        let exit = false;
 
-            console.log(j, combinations);
-          }
-
-          // Last note
-          if (exit) {
+        // Items looping
+        for (let j = i; j > 0; j--) {
+          let currentTotalValue = sumArrayItems(
+            combinations[indexCombinations]
+          );
+          if (currentTotalValue + noteValue <= value) {
+            combinations[indexCombinations].push(noteValue);
+            currentTotalValue += noteValue;
+          } else {
             break;
           }
-
-          indexCombinations++;
+          if (indexNote === 0 && j === 1) {
+            exit = true;
+          }
         }
-      });
 
+        // Last note
+        if (exit) {
+          break;
+        }
+
+        indexCombinations++;
+      }
+    }
+
+    console.log("All combinations");
     combinations.forEach((value, key) => {
+      console.log(key, value);
+    });
+
+    combinations = combinations.filter(el => sumArrayItems(el) === value);
+
+    const filterElement = el => {
+      let ret = true;
+      for (let i = 1; i < el.length; i++) {
+        const noteKeyAvailability = Object.values(NOTE_TYPE).indexOf(el[i]);
+        const noteQuantityNeeded = el.reduce((prev, curr, currIdx, arr) =>
+          arr[currIdx] === el[i] ? prev + 1 : prev
+        );
+        const isAvailable = notes[noteKeyAvailability] >= noteQuantityNeeded;
+        if (!isAvailable) {
+          ret = false;
+          break;
+        }
+      }
+      return ret;
+    };
+
+    // Remove invalid note combinations by availability
+    let validCombinations = combinations.filter(filterElement);
+
+    // for (let i = 0; i < combinations.length; i++) {
+    //   for (let j = 0; j < notes.length; j++) {
+    //     const noteValue = Object.values(NOTE_TYPE).find(
+    //       (value, key) => key === j
+    //     );
+    //     const noteAvailability = notes[j];
+    //     // Arrumar esse if é o contrario
+    //     if (
+    //       validCombinations[i].filter(el => el === noteValue).length <=
+    //       noteAvailability
+    //     ) {
+    //       validCombinations.push(combinations[i]);
+    //       break;
+    //     }
+    //   }
+    // }
+
+    console.log("Valid combinations");
+    validCombinations.forEach((value, key) => {
       console.log(key, value);
     });
   };

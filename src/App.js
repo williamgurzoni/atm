@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import { SCREEN, NOTE_TYPE } from "./types";
+import { SCREEN } from "./types";
 import Options from "./screens/Options";
 import AddNotes from "./screens/AddNotes";
 import { Subscribe } from "unstated";
@@ -10,22 +9,6 @@ import Info from "./screens/Info";
 import Withdraw from "./screens/Withdraw";
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    // Initialize ATM
-    const notes = [];
-    Object.values(NOTE_TYPE).forEach(value => {
-      notes.push(0);
-    });
-
-    this.state = {
-      screen: SCREEN.SHOW_OPTIONS,
-      notes,
-      keyboard: ""
-    };
-  }
-
   componentDidMount = () => {};
 
   renderContent = () => {

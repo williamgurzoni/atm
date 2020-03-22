@@ -23,7 +23,7 @@ const AddNotes = () => {
             ))}
             {noteSelected !== null ? (
               <span>
-                How many notes notes of{" $"}
+                How many notes of{" $"}
                 {Object.values(NOTE_TYPE).find(
                   (value, key) => key === noteSelected
                 )}
